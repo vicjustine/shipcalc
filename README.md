@@ -48,3 +48,5 @@ print(q.total, q.zone_code)
 | `src/shipcalc/rates.py` | Rate card lookup, billable weight, quoting |
 | `src/shipcalc/surcharges.py` | Fuel, residential and oversize surcharges |
 | `tests/` | pytest suite |
+
+# smoke test second run
