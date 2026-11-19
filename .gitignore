@@ -12,3 +12,6 @@ out/
 
 # Reference solutions — local study only, never on camera
 docs/reference/
+docs/RUNBOOK.md
+docs/RUNBOOK-VSCODE.md
+docs/package-deliverable.sh
