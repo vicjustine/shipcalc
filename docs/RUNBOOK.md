@@ -20,7 +20,7 @@ Mapped to this repo:
 | Advanced requirement | What you build on camera | How it's proven |
 | --- | --- | --- |
 | Test matrix | Python 3.10 / 3.11 / 3.12 × ubuntu | 3 green jobs in Actions |
-| Caching | `actions/cache` on pip wheels | 2nd run logs a cache hit |
+| Caching | `cache: pip` in setup-python | 2nd run logs a cache hit |
 | Deployment | Build artifact + release on tag | Release page shows the `.whl` |
 | **Test case that passes** | Push a deliberately broken commit → CI red → fix → CI green | Two contrasting runs |
 
@@ -151,48 +151,34 @@ on:
     branches: [main]
     tags: ['v*']
   pull_request:
-    branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
-      fail-fast: false
       matrix:
         python-version: ['3.10', '3.11', '3.12']
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Cache pip wheels
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: pip-${{ runner.os }}-py${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}
-          restore-keys: |
-            pip-${{ runner.os }}-py${{ matrix.python-version }}-
-
-      - name: Install
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"
-
-      - name: Lint
-        run: ruff check .
-
-      - name: Test
-        run: pytest -q
+          cache: pip
+      - run: pip install -e ".[dev]"
+      - run: ruff check .
+      - run: pytest -q
 ```
+
+> 23 lines, tested on real runners. `cache: pip` inside `setup-python@v5` replaces the
+> eight-line `actions/cache` block. Keep this open on a second screen and type it across —
+> the manual bans AI assistants and macros while recording, not working from your own notes.
+> Don't paste all 23 lines in one keystroke.
+
 
 4. **Commit changes…** → commit message `Add CI workflow with test matrix and pip caching` → **Commit directly to main**.
 5. Go to **Actions** and watch the run. Narrate nothing — just let it run.
 6. **Open each of the three matrix jobs** (3.10, 3.11, 3.12) and show them green.
-7. Expand the **Cache pip wheels** step on one job — first run shows a **cache miss**. This matters for step 2 of the proof.
+7. Expand **Post Run actions/setup-python@v5** — the first run logs *Cache saved with the key*, meaning nothing was there to restore. This matters for step 2 of the proof.
 
 ### Minutes 12–19 · Prove the pipeline actually catches failures
 
@@ -210,9 +196,8 @@ This is the **test case** — the single most important part for Advanced tier.
    (`*` → `+` — a plausible real bug, not obvious vandalism.)
 3. Commit to a **new branch** named `fix/fuel-surcharge-rounding`, and **open a pull request**.
 4. On the PR, watch the checks run and **go red**. Open the failing job and show the assertion:
-   `test_fuel_surcharge_uses_published_index` failing with the wrong total.
-5. **Now show the cache working:** expand **Cache pip wheels** on this run — it should log a
-   **cache hit** restored from the first run. That's your caching evidence.
+   `AssertionError: assert Decimal('100.16') == Decimal('16.10')` — 2 failed, 20 passed.
+5. **Now show the cache working:** expand **Run actions/setup-python@v5** — it logs *Cache restored from key*, restored from the first run. That's your caching evidence.
 6. Edit the file again **on the branch**, restore `*`, commit `Restore multiplicative fuel surcharge`.
 7. Checks re-run and go **green**. Merge the PR.
 
