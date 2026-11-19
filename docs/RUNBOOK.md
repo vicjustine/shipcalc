@@ -1,6 +1,6 @@
 # Workada Computer Use — Calibration Runbook
 
-**Assigned app:** GitHub · **Tier:** Advanced · **Workflow category:** Set up CI/CD from scratch
+**Repo:** github.com/vicjustine/shipcalc (private) · **Tier:** Advanced · **Workflow category:** Set up CI/CD from scratch
 **Target length:** 30 minutes (calibration sample) · **Repo:** `~/dev/workada-calibration`
 
 > Calibration rule from the manual: pick **one** direction, work it for **about 30 minutes**,
@@ -33,7 +33,7 @@ The last row is the **validation step** the QC checklist demands. Do not skip it
 - **Never type a password while recording.** Bloom logs every keystroke. Log in to GitHub *before* you press record.
 - **No AI assistants during the recording.** No Copilot, no Claude, no ChatGPT. Disable Copilot in VS Code before you start.
 - **Record `Entire screen`**, never a single window. Single-window recordings can fail to convert to MP4.
-- **Sandbox account only.** The new throwaway GitHub account — never a work account.
+- **Never a work account.** Your personal GitHub with a private throwaway repo is fine.
 - **Idle time under 15%.** For a 30-min recording that's 4.5 minutes total. No gap over 60s counts as active.
 - **Stay in the assigned app.** Time is credited to whatever is in the foreground. GitHub in the browser is the assigned app; the terminal and editor are supporting apps. Keep the browser in front as much as the work allows.
 - **No macros or custom shortcuts.** Standard app shortcuts only.
@@ -42,21 +42,7 @@ The last row is the **validation step** the QC checklist demands. Do not skip it
 
 ## Phase 0 — One-time setup (not counted in task time)
 
-### 0.1 Create the throwaway GitHub account
-
-You must do this yourself — it needs a password and email verification.
-
-1. Open a **private/incognito window** (so it doesn't collide with your `vicjustine` session).
-2. Go to `https://github.com/signup`.
-3. Use an email you control, e.g. a Gmail `+` alias: `oladeindev+workada@gmail.com`.
-4. Pick a username, e.g. `vic-workada-cal`.
-5. Verify the email, then **enable 2FA** if prompted (GitHub now requires it for contributors).
-6. Leave this account signed in **in a separate browser profile**, not incognito — incognito dies when closed.
-
-> **Recommended:** make a dedicated Chrome/Safari **profile** named `workada` and sign in there.
-> Your main account stays signed in in your normal profile. No crossover, nothing to mix up.
-
-### 0.2 Install Bloom
+### 0.1 Install Bloom
 
 1. Open your **Workada dashboard → Settings**. Download the **Mac** installer.
 2. Open the `.dmg` and **drag Bloom into Applications**.
@@ -79,7 +65,7 @@ xattr -dr com.apple.quarantine /Applications/Bloom.app
 
 No output means it worked. Reopen Bloom.
 
-### 0.3 Install the Workada timer
+### 0.2 Install the Workada timer
 
 1. Download from the **Workada timer download page** (no sign-in needed).
 2. On Mac, check your chip: ** menu → About This Mac**. Safari and Firefox always suggest the
@@ -87,7 +73,7 @@ No output means it worked. Reopen Bloom.
 3. Drag the timer into **Applications**, open it, sign in with your Workada account.
 4. Confirm the timer shows **Computer Use** as the project.
 
-### 0.4 Sign the consent form
+### 0.3 Sign the consent form
 
 In Workada, **sign the recording consent form**. Required before your first task.
 
@@ -103,31 +89,14 @@ cd ~/dev/workada-calibration && ./.venv/bin/python -m pytest && ./.venv/bin/pyth
 
 Expect: `22 passed` and `All checks passed!`
 
-### Push the repo to the new account
+### The repo is already pushed
 
-Once the new account exists, authenticate it **without disturbing `vicjustine`**:
-
-```bash
-gh auth login --hostname github.com --git-protocol https --web
-```
-
-Then confirm both accounts are present and switch to the new one:
+Live at **github.com/vicjustine/shipcalc** — private, 10 commits, Actions enabled and empty.
+Nothing to set up. To remove it after you submit:
 
 ```bash
-gh auth status
+gh repo delete vicjustine/shipcalc --yes
 ```
-
-```bash
-gh auth switch --user YOUR-NEW-USERNAME
-```
-
-Create the remote and push:
-
-```bash
-cd ~/dev/workada-calibration && gh repo create shipcalc --private --source=. --remote=origin --push
-```
-
-> Make the repo **private**. You can flip it public later if a deployment step needs it.
 
 ### Screen prep
 
@@ -135,14 +104,14 @@ cd ~/dev/workada-calibration && gh repo create shipcalc --private --source=. --r
 - **Do Not Disturb ON** (Control Centre → Focus → Do Not Disturb).
 - **Quit** Mail, Messages, Slack, Discord, personal apps.
 - **Disable GitHub Copilot** in VS Code if installed.
-- Close every tab that isn't this work. No bookmarks bar with personal links. No other repos visible.
+- Close every tab that isn't this work. **Don't open your profile or repo list on camera.**
 - Already signed in to the new GitHub account in the `workada` browser profile.
 
 ### Final pre-record checklist
 
-- [ ] Signed in to GitHub (new account) — no password typing ahead
+- [ ] Signed in to GitHub already — no password typing on camera
 - [ ] `pytest` green, `ruff` clean
-- [ ] Repo pushed, Actions tab empty (no workflows yet)
+- [ ] Repo live at `vicjustine/shipcalc`, Actions tab empty
 - [ ] Do Not Disturb on, personal apps quit
 - [ ] Copilot / all AI assistants disabled
 - [ ] **Workada timer started**
@@ -358,4 +327,4 @@ informational only and doesn't change pay.
 | "Bloom is damaged" | Click **Cancel**, run the `xattr -dr` command above, reopen |
 | CI run queues forever | Private repos have Actions minutes limits — make the repo public, or note it and continue |
 | Captured something sensitive | Email **support@workada.co within 24 hours** |
-| Pushed to the wrong account | Stop, `gh auth switch`, verify with `gh auth status` before continuing |
+| Done with the repo | `gh repo delete vicjustine/shipcalc --yes` |
