@@ -9,3 +9,6 @@ build/
 *.egg-info/
 .DS_Store
 out/
+
+# Reference solutions — local study only, never on camera
+docs/reference/
