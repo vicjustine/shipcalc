@@ -24,7 +24,7 @@ def fuel_surcharge(base: Decimal, period: str) -> Decimal:
     """
     if period not in FUEL_INDEX:
         raise KeyError(f"no published fuel index for period {period!r}")
-    return (base * FUEL_INDEX[period]).quantize(Decimal("0.01"))
+    return (base + FUEL_INDEX[period]).quantize(Decimal("0.01"))
 
 
 def residential_surcharge(is_residential: bool) -> Decimal:
